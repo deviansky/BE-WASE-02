@@ -1,10 +1,13 @@
 // app.js
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { createDBConnection } = require('./db/db');
 const productRoutes = require('./routes/productRoutes');
 const penghuniRoutes = require('./routes/penghuniRoutes');
 const statisticsRoutes = require('./routes/statisticsRoutes');
+const authRoutes = require('./routes/authRoutes');
+const kegiatanRoutes = require('./routes/kegiatanRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +20,11 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('Server berjalan dan koneksi database siap!');
 });
+// Auth
+app.use('/auth', authRoutes);
+
+// Kegiatan
+app.use('/kegiatan', kegiatanRoutes);
 
 // Register route modules
 app.use('/products', productRoutes);
