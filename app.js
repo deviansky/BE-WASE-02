@@ -1,5 +1,6 @@
 // app.js
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { createDBConnection } = require('./db/db');
@@ -8,6 +9,12 @@ const penghuniRoutes = require('./routes/penghuniRoutes');
 const statisticsRoutes = require('./routes/statisticsRoutes');
 const authRoutes = require('./routes/authRoutes');
 const kegiatanRoutes = require('./routes/kegiatanRoutes');
+const absensiRoutes = require('./routes/absensiRoutes');
+const notulenRoutes = require('./routes/notulenRoutes'); 
+const pemasukanRoutes = require('./routes/pemasukanRoutes');
+// ...
+
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,6 +22,9 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+app.use('/uploads/notulen', express.static(path.join(__dirname, 'uploads/notulen')));
+app.use('/notulen', require('./routes/notulenRoutes'));
 
 // Routes
 app.get('/', (req, res) => {
@@ -25,6 +35,16 @@ app.use('/auth', authRoutes);
 
 // Kegiatan
 app.use('/kegiatan', kegiatanRoutes);
+
+// Absensi
+app.use('/absensi', absensiRoutes);
+
+// Notulen
+app.use('/notulen', notulenRoutes);
+
+// Pemasukan
+app.use('/pemasukan', pemasukanRoutes);
+
 
 // Register route modules
 app.use('/products', productRoutes);
