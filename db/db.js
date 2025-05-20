@@ -4,7 +4,7 @@ const mysql = require('mysql2/promise');
 
 // Konfigurasi database
 const dbConfig = {
-  host: process.env.DB_HOST || 'hopper.proxy.rlwy.net',
+  host: process.env.DB_HOST || 'mysql.railway.internal',
   user: process.env.DB_USER || 'root',
   password: process.env.DB_PASSWORD || 'PwqZSguMkMDXLSDluaYWTWfEEvFwHZzz',
   database: process.env.DB_NAME || 'railway',
