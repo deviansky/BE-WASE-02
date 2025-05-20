@@ -4,11 +4,11 @@ const mysql = require('mysql2/promise');
 
 // Konfigurasi database
 const dbConfig = {
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.MYSQL_DATABASE,
-  port: process.env.MYSQLPORT  // Tambahkan port
+  host: process.env.DB_HOST || 'hopper.proxy.rlwy.net',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'PwqZSguMkMDXLSDluaYWTWfEEvFwHZzz',
+  database: process.env.DB_NAME || 'railway',
+  port: process.env.DB_PORT || 3306
 };
 
 // Fungsi untuk membuat koneksi database
