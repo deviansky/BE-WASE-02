@@ -4,11 +4,11 @@ const mysql = require('mysql2/promise');
 
 // Konfigurasi database
 const dbConfig = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT  // Tambahkan port
+  database: process.env.MYSQL_DATABASE,
+  port: process.env.MYSQLPORT  // Tambahkan port
 };
 
 // Fungsi untuk membuat koneksi database
