@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { createDBConnection } = require('./db/db'); // sesuaikan path jika berbeda
+const { createDBConnection } = require('./db/db');
 
 (async () => {
   try {
