@@ -33,8 +33,10 @@ const absensiController = {
       const { absensi_list } = req.body;
 
       connection = await createDBConnection();
+      console.log('Mulai transaksi');
       await connection.beginTransaction();
 
+      console.log('Hapus absensi lama');
       await connection.execute(
         'DELETE FROM absensi WHERE id_kegiatan = ?',
         [id_kegiatan]
@@ -47,6 +49,7 @@ const absensiController = {
         );
       }
 
+      console.log('Commit');
       await connection.commit();
       res.json({ message: 'Absensi berhasil disimpan' });
     } catch (error) {
