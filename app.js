@@ -26,6 +26,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/uploads/notulen', express.static(path.join(__dirname, 'uploads/notulen')));
 app.use('/notulen', require('./routes/notulenRoutes'));
