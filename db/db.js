@@ -42,5 +42,5 @@ async function executeQuery(query, params = []) {
 
 module.exports = {
   createDBConnection,
-  executeQuery
+  executeQuery,
 };

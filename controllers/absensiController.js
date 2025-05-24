@@ -1,52 +1,60 @@
-const db = require('../db/db'); // Sesuaikan dengan config DB Anda
+const { createDBConnection } = require('../db/db');
 
 const absensiController = {
   // GET - Ambil data absensi berdasarkan kegiatan
   getByKegiatan: async (req, res) => {
+    let connection;
     try {
       const { id_kegiatan } = req.params;
-      
+      connection = await createDBConnection();
+
       const query = `
         SELECT a.*, p.nama as nama_penghuni 
         FROM absensi a 
         JOIN penghunis p ON a.id_penghuni = p.id 
         WHERE a.id_kegiatan = ?
       `;
-      
-      const [rows] = await db.execute(query, [id_kegiatan]);
+
+      const [rows] = await connection.execute(query, [id_kegiatan]);
       res.json(rows);
     } catch (error) {
       console.error('Error fetching absensi:', error);
       res.status(500).json({ error: 'Gagal mengambil data absensi' });
+    } finally {
+      if (connection) await connection.end();
     }
   },
 
   // POST - Simpan/Update absensi
   create: async (req, res) => {
+    let connection;
     try {
       const { id_kegiatan } = req.params;
-      const { absensi_list } = req.body; // Array of {id_penghuni, status_kehadiran}
+      const { absensi_list } = req.body;
 
-      // Start transaction
-      await db.beginTransaction();
+      connection = await createDBConnection();
+      await connection.beginTransaction();
 
-      // Delete existing absensi untuk kegiatan ini
-      await db.execute('DELETE FROM absensi WHERE id_kegiatan = ?', [id_kegiatan]);
+      await connection.execute(
+        'DELETE FROM absensi WHERE id_kegiatan = ?',
+        [id_kegiatan]
+      );
 
-      // Insert new absensi data
       for (const item of absensi_list) {
-        await db.execute(
+        await connection.execute(
           'INSERT INTO absensi (id_kegiatan, id_penghuni, status_kehadiran) VALUES (?, ?, ?)',
           [id_kegiatan, item.id_penghuni, item.status_kehadiran]
         );
       }
 
-      await db.commit();
+      await connection.commit();
       res.json({ message: 'Absensi berhasil disimpan' });
     } catch (error) {
-      await db.rollback();
+      if (connection) await connection.rollback();
       console.error('Error saving absensi:', error);
       res.status(500).json({ error: 'Gagal menyimpan absensi' });
+    } finally {
+      if (connection) await connection.end();
     }
   }
 };
