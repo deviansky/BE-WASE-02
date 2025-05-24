@@ -41,7 +41,7 @@ app.use('/auth', authRoutes);
 app.use('/kegiatan', kegiatanRoutes);
 
 // Absensi
-app.use('/absensi', absensiRoutes);
+app.use('/api/absensi', absensiRoutes);
 
 // Notulen
 app.use('/notulen', notulenRoutes);
