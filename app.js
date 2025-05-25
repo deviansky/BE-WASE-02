@@ -14,9 +14,6 @@ const notulenRoutes = require('./routes/notulenRoutes');
 const pemasukanRoutes = require('./routes/pemasukanRoutes');
 // ...
 
-
-
-const app = express();
 const PORT = process.env.PORT;
 
 // Middleware
