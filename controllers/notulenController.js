@@ -26,26 +26,45 @@ exports.uploadNotulenMiddleware = upload.single('file');
 // Handler simpan notulen
 exports.createNotulen = async (req, res) => {
     try {
-        const { id_kegiatan } = req.body;
-        const filePath = req.file ? req.file.filename : null;
+        const { id_kegiatan, file } = req.body;
 
-        if (!id_kegiatan || !filePath) {
+        if (!id_kegiatan || !file) {
             return res.status(400).json({ message: 'id_kegiatan dan file wajib diisi' });
         }
 
+        // Ekstrak data base64
+        const matches = file.match(/^data:(.+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            return res.status(400).json({ message: 'Format file base64 tidak valid' });
+        }
+
+        const mimeType = matches[1];
+        const base64Data = matches[2];
+        const extension = mimeType.split('/')[1];
+        const filename = `${Date.now()}.${extension}`;
+        const filePath = path.join(uploadFolder, filename);
+
+        // Pastikan folder ada
+        if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
+
+        // Simpan file
+        fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
+
+        // Simpan ke DB
         const conn = await createDBConnection();
         await conn.execute(`
-      INSERT INTO notulen (id_kegiatan, file, created_at, update_at)
-      VALUES (?, ?, NOW(), NOW())
-    `, [id_kegiatan, filePath]);
+            INSERT INTO notulen (id_kegiatan, file, created_at, update_at)
+            VALUES (?, ?, NOW(), NOW())
+        `, [id_kegiatan, filename]);
         await conn.end();
 
-        res.status(201).json({ message: '✅ Notulen berhasil disimpan' });
+        res.status(201).json({ message: '✅ Notulen berhasil disimpan', filename });
     } catch (error) {
         console.error('❌ Gagal menyimpan notulen:', error);
         res.status(500).json({ message: 'Gagal menyimpan notulen' });
     }
 };
+
 
 
 // Handler update notulen (ganti file lama)
