@@ -1,7 +1,6 @@
 // app.js
 require('dotenv').config();
 const path = require('path');
-const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { createDBConnection } = require('./db/db');
@@ -19,8 +18,6 @@ const pemasukanRoutes = require('./routes/pemasukanRoutes');
 
 const app = express();
 const PORT = process.env.PORT;
-app.use(bodyParser.json({ limit: '5mb' })); // penting
-app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 // Middleware
 app.use(cors({
@@ -28,8 +25,8 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '5mb' })); // penting
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 app.use('/uploads/notulen', express.static(path.join(__dirname, 'uploads/notulen')));
 app.use('/notulen', require('./routes/notulenRoutes'));
