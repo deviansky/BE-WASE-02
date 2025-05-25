@@ -12,12 +12,17 @@ const kegiatanRoutes = require('./routes/kegiatanRoutes');
 const absensiRoutes = require('./routes/absensiRoutes');
 const notulenRoutes = require('./routes/notulenRoutes'); 
 const pemasukanRoutes = require('./routes/pemasukanRoutes');
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
 // ...
 
 
 
 const app = express();
 const PORT = process.env.PORT;
+app.use(bodyParser.json({ limit: '5mb' })); // penting
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 // Middleware
 app.use(cors({
