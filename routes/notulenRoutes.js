@@ -22,10 +22,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // POST: Upload notulen baru
-router.post('/upload', upload.single('file'), createNotulen);
+router.post('/upload', createNotulen);
 
 // PUT: Update notulen
-router.put('/:id', upload.single('file'), updateNotulen);
+router.put('/:id', updateNotulen);
 
 // GET: Ambil notulen berdasarkan id_kegiatan
 router.get('/kegiatan/:id_kegiatan', getNotulenByKegiatan);
