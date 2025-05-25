@@ -65,18 +65,31 @@ exports.createNotulen = async (req, res) => {
     }
 };
 
-
-
 // Handler update notulen (ganti file lama)
 exports.updateNotulen = async (req, res) => {
     const { id } = req.params;
-    const filePath = req.file ? req.file.filename : null;
+    const { file } = req.body;
 
-    if (!filePath) {
+    if (!file) {
         return res.status(400).json({ message: 'File baru wajib diunggah' });
     }
 
     try {
+        // Ekstrak data base64
+        const matches = file.match(/^data:(.+);base64,(.+)$/);
+        if (!matches || matches.length !== 3) {
+            return res.status(400).json({ message: 'Format file base64 tidak valid' });
+        }
+
+        const mimeType = matches[1];
+        const base64Data = matches[2];
+        const extension = mimeType.split('/')[1];
+        const filename = `${Date.now()}.${extension}`;
+        const filePath = path.join(uploadFolder, filename);
+
+        // Pastikan folder ada
+        if (!fs.existsSync(uploadFolder)) fs.mkdirSync(uploadFolder, { recursive: true });
+
         const conn = await createDBConnection();
 
         // Ambil data notulen lama untuk hapus file lama
@@ -89,10 +102,13 @@ exports.updateNotulen = async (req, res) => {
         const oldFile = rows[0].file;
         const oldPath = path.join(uploadFolder, oldFile);
 
+        // Simpan file baru
+        fs.writeFileSync(filePath, Buffer.from(base64Data, 'base64'));
+
         // Update file baru di DB
         await conn.execute(`
-        UPDATE notulen SET file = ?, update_at = NOW() WHERE id = ?
-      `, [filePath, id]);
+            UPDATE notulen SET file = ?, update_at = NOW() WHERE id = ?
+        `, [filename, id]);
 
         await conn.end();
 
@@ -101,7 +117,7 @@ exports.updateNotulen = async (req, res) => {
             fs.unlinkSync(oldPath);
         }
 
-        res.json({ message: '✅ Notulen berhasil diperbarui' });
+        res.json({ message: '✅ Notulen berhasil diperbarui', filename });
     } catch (error) {
         console.error('❌ Gagal update notulen:', error);
         res.status(500).json({ message: 'Gagal update notulen' });
@@ -127,4 +143,3 @@ exports.getNotulenByKegiatan = async (req, res) => {
         res.status(500).json({ message: 'Gagal mengambil notulen' });
     }
 };
-  
