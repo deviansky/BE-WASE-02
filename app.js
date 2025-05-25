@@ -1,8 +1,8 @@
 // app.js
 require('dotenv').config();
 const path = require('path');
+const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const { createDBConnection } = require('./db/db');
 const productRoutes = require('./routes/productRoutes');
 const penghuniRoutes = require('./routes/penghuniRoutes');
@@ -13,17 +13,17 @@ const absensiRoutes = require('./routes/absensiRoutes');
 const notulenRoutes = require('./routes/notulenRoutes'); 
 const pemasukanRoutes = require('./routes/pemasukanRoutes');
 // ...
-
+const app = express();
 const PORT = process.env.PORT;
 
 // Middleware
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({
   origin: true, // Atau gunakan '*'
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
-app.use(bodyParser.json({ limit: '5mb' })); // penting
-app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
 app.use('/uploads/notulen', express.static(path.join(__dirname, 'uploads/notulen')));
 app.use('/notulen', require('./routes/notulenRoutes'));
