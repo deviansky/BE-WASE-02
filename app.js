@@ -3,6 +3,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const { createDBConnection } = require('./db/db');
 const productRoutes = require('./routes/productRoutes');
 const penghuniRoutes = require('./routes/penghuniRoutes');
@@ -12,9 +13,6 @@ const kegiatanRoutes = require('./routes/kegiatanRoutes');
 const absensiRoutes = require('./routes/absensiRoutes');
 const notulenRoutes = require('./routes/notulenRoutes'); 
 const pemasukanRoutes = require('./routes/pemasukanRoutes');
-import express from 'express';
-import cors from 'cors';
-import bodyParser from 'body-parser';
 // ...
 
 
