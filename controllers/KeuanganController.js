@@ -5,12 +5,12 @@ exports.getAllKeuangan = async (req, res) => {
         const conn = await createDBConnection();
         const [rows] = await conn.execute(`
             SELECT 
-                k.id, b.nama_bulan, t.tahun, 
+                k.id, b.nama_bulan, t.nama_tahun AS tahun, 
                 k.pemasukan, k.pengeluaran, k.created_at, k.updated_at
             FROM keuangan k
             JOIN bulan b ON k.id_bulan = b.id
             JOIN tahun t ON k.id_tahun = t.id
-            ORDER BY t.tahun DESC, b.id DESC
+            ORDER BY t.nama_tahun DESC, b.id DESC
         `);
         await conn.end();
         res.json(rows);
