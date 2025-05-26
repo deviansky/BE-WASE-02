@@ -11,7 +11,7 @@ const authRoutes = require('./routes/authRoutes');
 const kegiatanRoutes = require('./routes/kegiatanRoutes');
 const absensiRoutes = require('./routes/absensiRoutes');
 const notulenRoutes = require('./routes/notulenRoutes'); 
-const pemasukanRoutes = require('./routes/pemasukanRoutes');
+const keuanganRoutes = require('./routes/keuanganRoutes');
 // ...
 const app = express();
 const PORT = process.env.PORT;
@@ -45,7 +45,7 @@ app.use('/api/absensi', absensiRoutes);
 app.use('/notulen', notulenRoutes);
 
 // Pemasukan
-app.use('/pemasukan', pemasukanRoutes);
+app.use('/keuangan', keuanganRoutes);
 
 // Register route modules
 app.use('/products', productRoutes);
